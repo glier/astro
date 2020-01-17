@@ -1,6 +1,6 @@
 package com.asn.astro.controller;
 
-import com.asn.astro.domain.User;
+import com.asn.astro.domain.auth.User;
 import com.asn.astro.repositories.MessageRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;

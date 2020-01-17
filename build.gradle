@@ -48,6 +48,7 @@ dependencies {
 //	implementation 'org.springframework.security.oauth.boot:spring-security-oauth2-autoconfigure'
 //	implementation 'org.springframework.security.oauth.boot:spring-security-oauth2-jwt'
 //	implementation 'org.springframework.security.oauth.boot:spring-security-oauth2-recource-server'
+	implementation 'io.jsonwebtoken:jjwt:0.9.1'
 	runtimeOnly 'org.postgresql:postgresql'
 	compileOnly 'org.projectlombok:lombok:1.18.10'
 	annotationProcessor 'org.projectlombok:lombok:1.18.10'
