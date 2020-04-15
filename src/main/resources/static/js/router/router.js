@@ -10,7 +10,7 @@ Vue.use(VueRouter)
 
 const routes = [
     { path: '/', component: MessagesList },
-    { path: '/auth', component: Auth },
+    { path: '/login', component: Auth },
     { path: '/profile', component: Profile },
     { path: '*', component: MessagesList }, // Route обрабатывается последовательно. Это эквивалент error page 404. * - любой путь
 ]

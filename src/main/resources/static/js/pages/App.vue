@@ -9,17 +9,17 @@
                 Messages
             </v-btn>
             <v-spacer></v-spacer>
-            <v-btn text
-                   :disabled="$route.path === '/profile'"
-                   @click="showProfile">
-                <v-avatar v-if="profile" size="36" class="mr-3">
-                    <img :src="profile.userpic"
-                         :alt="profile.name"
-                    >
-                </v-avatar>
-                <span v-if="profile">{{profile.name}}</span>
-            </v-btn>
-            <v-btn v-if="profile" icon href="/logout">
+<!--            <v-btn text-->
+<!--                   :disabled="$route.path === '/profile'"-->
+<!--                   @click="showProfile">-->
+<!--                <v-avatar v-if="profile" size="36" class="mr-3">-->
+<!--                    <img :src="profile.userpic"-->
+<!--                         :alt="profile.name"-->
+<!--                    >-->
+<!--                </v-avatar>-->
+<!--                <span v-if="profile">{{profile.name}}</span>-->
+<!--            </v-btn>-->
+            <v-btn v-if="status.loggedIn" icon v-on:click="logoutAction">
                 <v-icon>exit_to_app</v-icon>
             </v-btn>
         </v-app-bar>
@@ -31,13 +31,30 @@
 </template>
 
 <script>
-    import { mapState, mapMutations } from 'vuex'
+    import { mapState, mapMutations, mapActions } from 'vuex'
     import { addHandler } from "util/ws";
 
     export default {
-        computed: mapState(['profile']),
+        computed: {
+            ...mapState({
+                user: state => state.auth.user,
+                status: state => state.auth.status,
+                profile: state => state.messages.profile
+            })
+        },
+        //mapState(['profile']),
         methods: {
             ...mapMutations(['addMessageMutation', 'updateMessageMutation', 'removeMessageMutation']),
+            ...mapActions('auth', [
+                'logout'//, // -> this['some/nested/module/foo']()
+                //'some/nested/module/bar'  // -> this['some/nested/module/bar']()
+            ]),
+            logoutAction() {
+                // this.logout()
+                // this.$router.push('/')
+                this.$store.dispatch('auth/logout');
+                this.$router.push('/login');
+            },
             showMessages() {
                 this.$router.push('/')
             },
@@ -72,7 +89,7 @@
         },
         beforeMount() {
             if (!this.profile) {
-                this.$router.replace('/auth')
+                this.$router.replace('/login')
             }
         }
     }

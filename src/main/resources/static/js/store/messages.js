@@ -1,10 +1,8 @@
-import Vue from 'vue'
-import Vuex from 'vuex'
 import messagesApi from 'api/messages'
 
-Vue.use(Vuex)
 
-export default new Vuex.Store({
+export const messages ={
+    namespaced: true,
     state: {
         messages: frontendData.messages,
         profile: frontendData.profile
@@ -64,4 +62,4 @@ export default new Vuex.Store({
             }
         },
     }
-})
+}
