@@ -3,6 +3,7 @@ package com.asn.astro.controller;
 import com.asn.astro.domain.auth.ERole;
 import com.asn.astro.domain.auth.Role;
 import com.asn.astro.domain.auth.User;
+import com.asn.astro.exceptions.NotFoundException;
 import com.asn.astro.payload.request.LoginRequest;
 import com.asn.astro.payload.request.SignupRequest;
 import com.asn.astro.payload.response.JwtResponse;
@@ -11,6 +12,9 @@ import com.asn.astro.repositories.RoleRepository;
 import com.asn.astro.repositories.UserRepository;
 import com.asn.astro.security.jwt.JwtUtils;
 import com.asn.astro.services.UserDetailsImpl;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -21,6 +25,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.io.IOException;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -119,5 +124,23 @@ public class AuthController {
 		userRepository.save(user);
 
 		return ResponseEntity.ok(new MessageResponse("User registered successfully!"));
+	}
+
+	@GetMapping("/user")
+	public ResponseEntity<?> getUserDetailByToken(@RequestHeader("Authorization") String token) throws IOException {
+		jwtUtils.validateJwtToken(token.replaceAll("Bearer ", ""));
+		String username = jwtUtils.getUserNameFromJwtToken(token.replaceAll("Bearer ", ""));
+
+		User user = userRepository
+				.findByUsername(username)
+				.orElseThrow(() -> new NotFoundException());
+
+		UserDetailsImpl userDetails = UserDetailsImpl.build(user);
+
+		ObjectMapper mapper = new ObjectMapper();
+		mapper.enable(SerializationFeature.WRAP_ROOT_VALUE);
+		JsonNode userRootNode = mapper.valueToTree(userDetails);
+
+		return ResponseEntity.ok(userRootNode);
 	}
 }
