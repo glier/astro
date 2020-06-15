@@ -1,14 +1,11 @@
 package com.asn.astro.domain.auth;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 
+
 import javax.persistence.*;
-import javax.validation.constraints.Email;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Size;
+import javax.validation.constraints.*;
 import java.io.Serializable;
-import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -16,7 +13,6 @@ import java.util.Set;
 @Data
 @Table(	name = "users",
         uniqueConstraints = {
-                @UniqueConstraint(columnNames = "username"),
                 @UniqueConstraint(columnNames = "email")
         })
 public class User implements Serializable {
@@ -26,10 +22,6 @@ public class User implements Serializable {
     private Long id;
 
     @NotBlank
-    @Size(max = 20)
-    private String username;
-
-    @NotBlank
     @Size(max = 50)
     @Email
     private String email;
@@ -37,6 +29,10 @@ public class User implements Serializable {
     @NotBlank
     @Size(max = 120)
     private String password;
+
+    @NotNull
+    @AssertTrue
+    private Boolean isPolicyAgree;
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(	name = "user_roles",
@@ -50,16 +46,16 @@ public class User implements Serializable {
 
     private String locale;
 
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
-    private LocalDateTime lastVisit;
+//    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
+//    private LocalDateTime lastVisit;
 
     public User() {
     }
 
-    public User(String username, String email, String password) {
-        this.username = username;
+    public User(String email, String password, Boolean isPolicyAgree) {
         this.email = email;
         this.password = password;
+        this.isPolicyAgree = isPolicyAgree;
     }
 
 }
